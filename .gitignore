@@ -114,3 +114,4 @@ venv.bak/
 metastore_db
 tmp
 derby.log
+.DS_Store
