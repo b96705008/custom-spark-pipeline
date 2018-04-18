@@ -3,43 +3,15 @@ from __future__ import print_function
 from __future__ import division
 from __future__ import unicode_literals
 
+import functools
+
 from pyspark.ml.pipeline import Estimator, Model, Pipeline, PipelineModel
 from pyspark.ml.util import DefaultParamsReadable, DefaultParamsWritable
 from pyspark.ml.param.shared import *
 import pyspark.sql.functions as F
+from pyspark.sql import Row
 
-
-class HasOutputColsPrefix(Params):
-
-    output_prefix = Param(Params._dummy(), "output_prefix", 
-                         "prefix for every output column name",
-                         typeConverter=TypeConverters.toString)
-
-    def __init__(self):
-        super(HasOutputColsPrefix, self).__init__()
-        self._setDefault(output_prefix='is')
-    
-    def setOutputColsPrefix(self, value):
-        return self._set(output_prefix=value)
-
-    def getOutputColsPrefix(self):
-        return self.getOrDefault(self.output_prefix)
-
-
-class HasFieldValues(Params):
-
-    field_values = Param(Params._dummy(), "field_values", 
-                         "all possible values for a field",
-                         typeConverter=TypeConverters.toList)
-
-    def __init__(self):
-        super(HasFieldValues, self).__init__()
-
-    def setFieldValues(self, value):
-        return self._set(field_values=value)
-
-    def getFieldValues(self):
-        return self.getOrDefault(self.field_values)
+from params import HasOutputColsPrefix, HasFieldValues
 
 
 class StringDisassembleModel(Model, HasInputCol, 

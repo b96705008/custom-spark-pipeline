@@ -8,20 +8,7 @@ from pyspark.ml.util import DefaultParamsReadable, DefaultParamsWritable
 from pyspark.ml.param.shared import *
 import pyspark.sql.functions as F
 
-
-class HasModeDict(Params):
-    
-    mode_dict = Param(Params._dummy(),
-            "mode_dict", "mode for every column")
-
-    def __init__(self):
-        super(HasModeDict, self).__init__()
-
-    def setModeDict(self, value):
-        return self._set(mode_dict=value)
-
-    def getModeDict(self):
-        return self.getOrDefault(self.mode_dict)
+from params import HasModeDict
 
 
 class ImputeCategoricalWithModeModel(Model, 
@@ -59,7 +46,7 @@ class ImputeCategoricalWithMode(Estimator, HasInputCols, HasOutputCols):
         xs, ys = self.prepare_io_params()
         mode_dict = {}
         for c in xs:
-            rows = df.where('{} is not null'.format(c)) \
+            rows = dataset.where('{} is not null'.format(c)) \
                 .groupBy(c) \
                 .agg(F.count('*').alias('count')) \
                 .orderBy(F.desc('count')) \

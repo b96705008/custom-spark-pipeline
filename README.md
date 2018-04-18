@@ -9,4 +9,4 @@
 * Custom String to Individual OneHot Features Estimator
 
 # categorical_pipeline
-* imputer and string disassembler estimator & model lib
+* imputer and string disassembler estimator & model
