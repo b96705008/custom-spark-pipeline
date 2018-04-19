@@ -4,7 +4,7 @@
 ## ImputeCategoricalWithModeModel
 * Impute categorical features with mode
 
-## StringDisassembler (One Hot)
+## StringDisassembler (OneHot)
 * Disassemble categorical feature into multiple binary columns 
 
 ## VectorDisassembler
@@ -21,6 +21,6 @@
 ## vec-disassembler
 * Try VectorDisassembler
 
-## import-tykuo-model
+## full-process-pipeline
 * Put all custom feature estimators together
 
