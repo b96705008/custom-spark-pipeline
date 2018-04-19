@@ -1,12 +1,26 @@
 # custom-spark-pipeline
 
+# app/tykuo_spark_model
+## ImputeCategoricalWithModeModel
+* Impute categorical features with mode
+
+## StringDisassembler (One Hot)
+* Disassemble categorical feature into multiple binary columns 
+
+## VectorDisassembler
+* Disassemble vector feature into multiple numeric columns 
+
 # Examples
-## impute-pipeline
+## mode-imputer
 * Impute categorical features with mode
 * Combine with spark 2.3 imputer into savable pipeline
 
-## onehot-pipeline
-* Custom String to Individual OneHot Features Estimator
+## custom-onehot
+* StringDisassembler vs OneHotEncoderEstimator
 
-# categorical_pipeline
-* imputer and string disassembler estimator & model
+## vec-disassembler
+* Try VectorDisassembler
+
+## import-tykuo-model
+* Put all custom feature estimators together
+
