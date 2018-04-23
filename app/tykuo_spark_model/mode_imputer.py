@@ -3,7 +3,7 @@ from __future__ import print_function
 from __future__ import division
 from __future__ import unicode_literals
 
-from pyspark.ml.pipeline import Estimator, Model, Pipeline, PipelineModel
+from pyspark.ml.pipeline import Estimator, Model
 from pyspark.ml.util import DefaultParamsReadable, DefaultParamsWritable
 from pyspark.ml.param.shared import *
 import pyspark.sql.functions as F
