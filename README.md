@@ -1,7 +1,7 @@
 # custom-spark-pipeline
 
 # app/tykuo_spark_model
-## ImputeCategoricalWithModeModel
+## ModeImputer
 * Impute categorical features with mode
 
 ## StringDisassembler (OneHot)
@@ -9,6 +9,9 @@
 
 ## VectorDisassembler
 * Disassemble vector feature into multiple numeric columns 
+
+## ConstantImputer
+* Impute NA with constant (string, number or dict)
 
 # Examples
 ## mode-imputer
@@ -20,6 +23,9 @@
 
 ## vec-disassembler
 * Try VectorDisassembler
+
+## constant-imputer
+* Try ConstantImputer
 
 ## full-process-pipeline
 * Put all custom feature estimators together
