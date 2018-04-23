@@ -52,3 +52,18 @@ class HasFieldValues(Params):
 
     def getFieldValues(self):
         return self.getOrDefault(self.field_values)
+
+
+class HasConstValue(Params):
+
+    const_value = Param(Params._dummy(),
+            "const_value", "string, double or dict")
+
+    def __init__(self):
+        super(HasConstValue, self).__init__()
+
+    def setConstValue(self, value):
+        return self._set(const_value=value)
+
+    def getConstValue(self):
+        return self.getOrDefault(self.const_value)

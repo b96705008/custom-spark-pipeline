@@ -11,7 +11,7 @@ import pyspark.sql.functions as F
 from params import HasModeDict
 
 
-class ImputeCategoricalWithModeModel(Model, 
+class ModeImputerModel(Model, 
     HasInputCols, HasOutputCols, HasModeDict, 
     DefaultParamsReadable, DefaultParamsWritable):
     
@@ -26,7 +26,7 @@ class ImputeCategoricalWithModeModel(Model,
         return imputed_df
 
 
-class ImputeCategoricalWithMode(Estimator, HasInputCols, HasOutputCols):
+class ModeImputer(Estimator, HasInputCols, HasOutputCols):
     
     def prepare_io_params(self):
         xs = self.getInputCols()
@@ -53,7 +53,7 @@ class ImputeCategoricalWithMode(Estimator, HasInputCols, HasOutputCols):
                 .take(1) 
             if len(rows) > 0:
                 mode_dict[c] = rows[0][c]
-        impute_model = ImputeCategoricalWithModeModel() \
+        impute_model = ModeImputerModel() \
             .setInputCols(xs) \
             .setOutputCols(ys) \
             .setModeDict(mode_dict)
