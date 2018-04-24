@@ -54,6 +54,23 @@ class HasFieldValues(Params):
         return self.getOrDefault(self.field_values)
 
 
+class FillMode(Params):
+
+    fill_mode = Param(Params._dummy(), "fill_mode", 
+                         "should disassembler fill mode first",
+                         typeConverter=TypeConverters.toBoolean)
+
+    def __init__(self):
+        super(FillMode, self).__init__()
+        self._setDefault(fill_mode=False)
+
+    def setFillMode(self, value):
+        return self._set(fill_mode=value)
+
+    def getFillMode(self):
+        return self.getOrDefault(self.fill_mode)
+
+    
 class HasConstValue(Params):
 
     const_value = Param(Params._dummy(),

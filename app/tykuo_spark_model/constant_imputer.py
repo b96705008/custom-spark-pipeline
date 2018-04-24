@@ -8,6 +8,8 @@ from pyspark.ml.param.shared import *
 from pyspark.ml.util import DefaultParamsReadable, DefaultParamsWritable
 from params import HasConstValue
 
+import pyspark.sql.functions as F
+
 
 class ConstantImputer(Transformer, HasInputCols, HasOutputCols, HasConstValue, 
                       DefaultParamsReadable, DefaultParamsWritable):

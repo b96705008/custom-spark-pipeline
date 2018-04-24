@@ -11,35 +11,67 @@ from pyspark.ml.param.shared import *
 import pyspark.sql.functions as F
 from pyspark.sql import Row
 
-from params import HasOutputColsPrefix, HasFieldValues
+from params import HasOutputColsPrefix, HasFieldValues, FillMode
 
 
-class StringDisassembleModel(Model, HasInputCol, HasOutputCols, HasFieldValues, 
+class StringDisassembleModel(Model, HasInputCol, HasOutputCols, 
+                             HasFieldValues, FillMode, 
                              DefaultParamsReadable, DefaultParamsWritable):
     
+    def getMode(self):
+        values = self.getFieldValues()
+        return None if len(values) == 0 else values[0]
+    
     @staticmethod
-    def disassemble_row(x, fields, values, row):
-        new_data = {f: float(row[x]==v) 
-                    for f, v in zip(fields, values)}
+    def disassemble_row(params, row):
+        category = row[params['input']]
+        if category is None and params['fill_mode']:
+            category = params['mode']
+            
+        new_data = {f: float(category==v)
+                    for f, v in params['b_fv_list'].value}
+        
         data = row.asDict()
         data.update(new_data)
         return Row(**data) 
     
     def _transform(self, dataset):
-        x = self.getInputCol()
         fields = self.getOutputCols()
         values = self.getFieldValues()
-        cols = dataset.columns + fields
+        sc = dataset.rdd.context
+        b_fv_list = sc.broadcast(zip(fields, values))
+       
+        dismb_params = {
+            'input': self.getInputCol(),
+            'b_fv_list': sc.broadcast(zip(fields, values)),
+            'fill_mode': self.getFillMode(),
+            'mode': self.getMode()
+        }
+        
         disassemble_func = functools \
-            .partial(self.disassemble_row, x, fields, values)
-            
+            .partial(self.disassemble_row, dismb_params)
+        
+        cols = dataset.columns + fields
         return dataset.rdd \
             .map(disassemble_func) \
             .toDF() \
             .select(*cols)
 
 
-class StringDisassembler(Estimator, HasInputCol, HasOutputColsPrefix):
+class StringDisassembler(Estimator, HasInputCol, HasOutputColsPrefix, FillMode):
+    
+    def get_values(self, dataset):
+        x = self.getInputCol()
+        # values ordered by count (mode)
+        values = dataset \
+            .where('{} is not null'.format(x)) \
+            .groupBy(x) \
+            .agg(F.count('*').alias('count')) \
+            .orderBy(F.desc('count')) \
+            .rdd.map(lambda r: r[x]) \
+            .collect()
+            
+        return values
     
     def get_fields(self, values):
         x = self.getInputCol()
@@ -48,18 +80,12 @@ class StringDisassembler(Estimator, HasInputCol, HasOutputColsPrefix):
     
     def _fit(self, dataset):
         x = self.getInputCol()
-        
-        values = dataset.rdd \
-            .map(lambda r: r[x]) \
-            .distinct() \
-            .filter(lambda v: v is not None) \
-            .collect()
-            
+        values = self.get_values(dataset)
         fields = self.get_fields(values)
-        
         model = StringDisassembleModel() \
             .setInputCol(x) \
             .setOutputCols(fields) \
-            .setFieldValues(values)
+            .setFieldValues(values) \
+            .setFillMode(self.getFillMode())
 
         return model
