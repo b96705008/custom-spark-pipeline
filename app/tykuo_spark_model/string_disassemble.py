@@ -22,40 +22,25 @@ class StringDisassembleModel(Model, HasInputCol, HasOutputCols,
         values = self.getFieldValues()
         return None if len(values) == 0 else values[0]
     
-    @staticmethod
-    def disassemble_row(params, row):
-        category = row[params['input']]
-        if category is None and params['fill_mode']:
-            category = params['mode']
-            
-        new_data = {f: float(category==v)
-                    for f, v in params['b_fv_list'].value}
-        
-        data = row.asDict()
-        data.update(new_data)
-        return Row(**data) 
-    
     def _transform(self, dataset):
+        x = self.getInputCol()
         fields = self.getOutputCols()
         values = self.getFieldValues()
-        sc = dataset.rdd.context
-        b_fv_list = sc.broadcast(zip(fields, values))
-       
-        dismb_params = {
-            'input': self.getInputCol(),
-            'b_fv_list': sc.broadcast(zip(fields, values)),
-            'fill_mode': self.getFillMode(),
-            'mode': self.getMode()
-        }
+        fill_mode = self.getFillMode()
+        mode = self.getMode()
         
-        disassemble_func = functools \
-            .partial(self.disassemble_row, dismb_params)
+        new_df = dataset
+        for f, v in zip(fields, values):
+            null_cond = None
+            if fill_mode:
+                null_cond = (F.lit(mode) == F.lit(v)).cast('double')
+            else:
+                null_cond = 0
         
-        cols = dataset.columns + fields
-        return dataset.rdd \
-            .map(disassemble_func) \
-            .toDF() \
-            .select(*cols)
+            new_df = new_df.withColumn(f, F.when(F.isnull(x), null_cond) \
+                    .otherwise((F.col(x) == F.lit(v)).cast('double')))
+        
+        return new_df
 
 
 class StringDisassembler(Estimator, HasInputCol, HasOutputColsPrefix, FillMode):
