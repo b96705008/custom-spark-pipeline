@@ -6,13 +6,13 @@ from __future__ import unicode_literals
 import pyspark.sql.functions as F
 
 
-class ImputeValueGenerator(object):
+class ValueGenerator(object):
     
     def generate(self, dataset, inputCol):
         raise NotImplementedError
 
 
-class ModeGenerator(ImputeValueGenerator):
+class ModeGenerator(ValueGenerator):
     
     def generate(self, dataset, inputCol):
         impute_val = None
@@ -32,7 +32,7 @@ class ModeGenerator(ImputeValueGenerator):
         return impute_val
 
 
-class MedianGenerator(ImputeValueGenerator):
+class MedianGenerator(ValueGenerator):
     
     def generate(self, dataset, inputCol):
         impute_val = None
@@ -49,7 +49,7 @@ class MedianGenerator(ImputeValueGenerator):
         return impute_val
 
 
-class MeanGenerator(ImputeValueGenerator):
+class MeanGenerator(ValueGenerator):
     
     def generate(self, dataset, inputCol):
         agg_func = 'mean'
