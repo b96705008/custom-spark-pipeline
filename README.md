@@ -1,32 +1,33 @@
 # custom-spark-pipeline
+* Custom pyspark transformer, estimator (Imputer for Categorical Features with mode, Vector Disassembler etc.)
 
-# app/tykuo_spark_model
-## ModeImputer
+## Folder Structure (app/tykuo_spark_model)
+### ModeImputer
 * Impute categorical features with mode
 
-## StringDisassembler (OneHot)
+### StringDisassembler (OneHot)
 * Disassemble categorical feature into multiple binary columns 
 
-## VectorDisassembler
+### VectorDisassembler
 * Disassemble vector feature into multiple numeric columns 
 
-## ConstantImputer
+### ConstantImputer
 * Impute NA with constant (string, number or dict)
 
-# Examples
-## mode-imputer
+## Examples
+### mode-imputer
 * Impute categorical features with mode
 * Combine with spark 2.3 imputer into savable pipeline
 
-## custom-onehot
+### custom-onehot
 * StringDisassembler vs OneHotEncoderEstimator
 
-## vec-disassembler
+### vec-disassembler
 * Try VectorDisassembler
 
-## constant-imputer
+### constant-imputer
 * Try ConstantImputer
 
-## full-process-pipeline
+### full-process-pipeline
 * Put all custom feature estimators together
 
