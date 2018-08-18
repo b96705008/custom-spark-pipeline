@@ -31,3 +31,7 @@
 ### full-process-pipeline
 * Put all custom feature estimators together
 
+## How to start example in Jupyter?
+```
+./start-notebook.sh
+```
